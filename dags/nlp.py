@@ -37,7 +37,7 @@ def preprocess(**context):
     # lines = re.sub("&*|#*|;*", "", lines)
     # lines = lines.split('\n')
     cleaned_text = pre_process_document(text)
-    lines = [l for l in cleaned_text.split('\n')]
+    lines = [l for l in cleaned_text.split('\n')]  # todo: use nltk tokenizer instead
     context['task_instance'].xcom_push(key="cleaned_lines", value=lines)
     return "pushed lines %d" % (len(lines))
 
@@ -52,6 +52,7 @@ def sentiment(**context):
     context['task_instance'].xcom_push(key='line_polarities', value=polarity)
     return "pushed polarities %d" % (len(polarity))
 
+## todo: sort by compound polarity, get first and last five
 def polarity_sorter(sort_key, **context):
     polarities = context['ti'].xcom_pull(task_ids='sentiment', key='line_polarities')
     lines = np.array(context['ti'].xcom_pull(task_ids='preprocess', key='cleaned_lines'))
