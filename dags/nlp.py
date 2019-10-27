@@ -7,6 +7,8 @@ import re
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 
+from utils import pre_process_document
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -27,13 +29,15 @@ def scraper(link, **context):
 
 def preprocess(**context):
     text = context['ti'].xcom_pull(task_ids='scraper', key='scraped_text')
-    lines = re.sub("<.*?>", "", text)
-    lines = re.sub("&nbsp;", " ", lines)
-    lines = re.sub("\s{2,}", "", lines)
-    lines = re.sub("^\s+|\s+$", "", lines)
-    lines = re.sub("\d+", "", lines)
-    lines = re.sub("&*|#*|;*", "", lines)
-    lines = lines.split('\n')
+    # lines = re.sub("<.*?>", "", text)
+    # lines = re.sub("&nbsp;", " ", lines)
+    # lines = re.sub("\s{2,}", "", lines)
+    # lines = re.sub("^\s+|\s+$", "", lines)
+    # lines = re.sub("\d+", "", lines)
+    # lines = re.sub("&*|#*|;*", "", lines)
+    # lines = lines.split('\n')
+    cleaned_text = pre_process_document(text)
+    lines = [l for l in cleaned_text.split('\n')]
     context['task_instance'].xcom_push(key="cleaned_lines", value=lines)
     return "pushed lines %d" % (len(lines))
 
