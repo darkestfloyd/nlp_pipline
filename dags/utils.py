@@ -51,7 +51,7 @@ def pre_process_document(document):
     # special_char_pattern = re.compile(r'([{.(-)!}])')
     # document = special_char_pattern.sub(" \\1 ", document)
     # document = remove_special_characters(document, remove_digits=True)  
-    document = re.sub('[^A-Za-z0-9\n]+', ' ', document)
+    document = re.sub('[^A-Za-z\n]+', ' ', document)
 
     # remove extra whitespace
     #document = re.sub(' +', ' ', document)
